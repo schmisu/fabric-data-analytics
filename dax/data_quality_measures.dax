@@ -1,0 +1,272 @@
+-- =====================================================
+-- Data Quality Measures for Power BI
+-- =====================================================
+-- Purpose: Validate data completeness and identify issues
+-- Usage: Copy these measures for the Data Quality page
+-- =====================================================
+
+-- =====================================================
+-- BASIC QUALITY METRICS
+-- =====================================================
+
+Missing Vendor Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[is_missing_vendor] = 1
+)
+
+Missing Vendor % =
+DIVIDE([Missing Vendor Count], COUNTROWS(accounts_payable_fact), 0)
+
+Zero Amount Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[is_zero_amount] = 1
+)
+
+Zero Amount % =
+DIVIDE([Zero Amount Count], COUNTROWS(accounts_payable_fact), 0)
+
+Vendor Not in Master Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[is_vendor_not_in_master] = 1
+)
+
+Vendor Not in Master % =
+DIVIDE([Vendor Not in Master Count], COUNTROWS(accounts_payable_fact), 0)
+
+Missing Posting Date Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    ISBLANK(accounts_payable_fact[posting_date])
+)
+
+Missing Posting Date % =
+DIVIDE([Missing Posting Date Count], COUNTROWS(accounts_payable_fact), 0)
+
+Missing Document Type Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    ISBLANK(accounts_payable_fact[document_type])
+)
+
+Missing Document Type % =
+DIVIDE([Missing Document Type Count], COUNTROWS(accounts_payable_fact), 0)
+
+Invalid Payment Terms Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    ISBLANK(accounts_payable_fact[payment_terms]),
+    accounts_payable_fact[account_type] = "K"
+)
+
+Invalid Payment Terms % =
+DIVIDE([Invalid Payment Terms Count], COUNTROWS(accounts_payable_fact), 0)
+
+-- =====================================================
+-- OVERALL QUALITY SCORE
+-- =====================================================
+
+Total Quality Issues =
+[Missing Vendor Count] +
+[Zero Amount Count] +
+[Vendor Not in Master Count] +
+[Missing Posting Date Count] +
+[Missing Document Type Count]
+
+Data Quality Score =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR IssueCount = [Total Quality Issues]
+RETURN
+    DIVIDE(TotalRecords - IssueCount, TotalRecords, 1)
+
+Critical Issues % =
+DIVIDE([Total Quality Issues], COUNTROWS(accounts_payable_fact), 0)
+
+Quality Status =
+SWITCH(
+    TRUE(),
+    [Data Quality Score] >= 0.95, "Excellent ✅",
+    [Data Quality Score] >= 0.90, "Good ✓",
+    [Data Quality Score] >= 0.80, "Warning ⚠",
+    "Critical ❌"
+)
+
+-- =====================================================
+-- FIELD COMPLETENESS MEASURES
+-- =====================================================
+
+Posting Date Completeness % =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[posting_date]))
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+Document Date Completeness % =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[document_date]))
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+Vendor Number Completeness % =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[vendor_number]))
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+Payment Terms Completeness % =
+VAR TotalRecords = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[account_type] = "K"
+)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[payment_terms])),
+    accounts_payable_fact[account_type] = "K"
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+Baseline Date Completeness % =
+VAR TotalRecords = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[account_type] = "K"
+)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[baseline_payment_date])),
+    accounts_payable_fact[account_type] = "K"
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+Vendor Name Completeness % =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[vendor_name]))
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+Amount Completeness % =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR RecordsWithValue = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    NOT(ISBLANK(accounts_payable_fact[amount_local_currency]))
+)
+RETURN
+    DIVIDE(RecordsWithValue, TotalRecords, 0)
+
+-- =====================================================
+-- COVERAGE METRICS
+-- =====================================================
+
+Vendor Coverage Rate =
+VAR TotalVendorLines = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[account_type] = "K"
+)
+VAR MatchedVendorLines = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[account_type] = "K",
+    accounts_payable_fact[is_vendor_not_in_master] = 0
+)
+RETURN
+    DIVIDE(MatchedVendorLines, TotalVendorLines, 0)
+
+Invoice Coverage Rate =
+VAR TotalInvoices = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[document_type_description] = "Invoice"
+)
+VAR InvoicesWithPaymentTerms = CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[document_type_description] = "Invoice",
+    NOT(ISBLANK(accounts_payable_fact[baseline_payment_date]))
+)
+RETURN
+    DIVIDE(InvoicesWithPaymentTerms, TotalInvoices, 0)
+
+-- =====================================================
+-- RECORD COUNTS
+-- =====================================================
+
+Total Line Items =
+COUNTROWS(accounts_payable_fact)
+
+Total Documents =
+DISTINCTCOUNT(accounts_payable_fact[document_number])
+
+Total Vendors =
+DISTINCTCOUNT(accounts_payable_fact[vendor_number])
+
+Earliest Posting Date =
+MIN(accounts_payable_fact[posting_date])
+
+Latest Posting Date =
+MAX(accounts_payable_fact[posting_date])
+
+Data Span (Days) =
+DATEDIFF([Earliest Posting Date], [Latest Posting Date], DAY)
+
+-- =====================================================
+-- ISSUE IDENTIFICATION
+-- =====================================================
+
+Records Missing Critical Fields =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    OR(
+        ISBLANK(accounts_payable_fact[posting_date]),
+        ISBLANK(accounts_payable_fact[document_type])
+    )
+)
+
+Vendor Lines Without Master Data =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[account_type] = "K",
+    ISBLANK(accounts_payable_fact[vendor_name])
+)
+
+Invoices Without Payment Terms =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[document_type_description] = "Invoice",
+    ISBLANK(accounts_payable_fact[baseline_payment_date])
+)
+
+-- =====================================================
+-- RECOMMENDED ACTIONS
+-- =====================================================
+
+High Priority Issues =
+[Missing Vendor Count] + [Vendor Not in Master Count] + [Missing Posting Date Count]
+
+Medium Priority Issues =
+[Invalid Payment Terms Count] + [Missing Document Type Count]
+
+Low Priority Issues =
+[Zero Amount Count]
+
+Action Required =
+IF(
+    [High Priority Issues] > 0,
+    "Fix High Priority Issues Before Analysis",
+    IF(
+        [Medium Priority Issues] > ([Total Line Items] * 0.1),
+        "Review Medium Priority Issues",
+        "Data Quality Acceptable"
+    )
+)

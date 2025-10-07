@@ -1,5 +1,5 @@
-# SAP Sample Data - CSV files should not be committed to production
-*.csv
+# Resources folder - sample data should not be committed to production
+resources/
 
 # Python
 __pycache__/
