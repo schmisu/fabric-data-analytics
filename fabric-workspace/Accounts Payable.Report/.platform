@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Accounts Payable"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "198b0268-d7c3-a02a-43fb-55ea3f89400a"
+  }
+}

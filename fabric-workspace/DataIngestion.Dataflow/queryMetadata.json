@@ -1,0 +1,79 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {},
+  "name": "DataIngestion",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "OneDriveConnection": {
+      "queryId": "987af68a-e059-42c9-8880-3b50368661ff",
+      "queryName": "OneDriveConnection",
+      "loadEnabled": false
+    },
+    "BKPF": {
+      "queryId": "0fde675d-759d-4b5b-911b-57b0b926922c",
+      "queryName": "BKPF",
+      "loadEnabled": false
+    },
+    "load_bkpf": {
+      "queryId": "a1e7b11f-ce81-48a2-967c-0238c6683278",
+      "queryName": "load_bkpf",
+      "loadEnabled": false
+    },
+    "BSEG": {
+      "queryId": "16081057-bee1-43ec-bc3b-1991ddff2d2f",
+      "queryName": "BSEG",
+      "loadEnabled": false
+    },
+    "LFA1": {
+      "queryId": "6784f353-dd67-4869-9661-fec9571486ad",
+      "queryName": "LFA1",
+      "loadEnabled": false
+    },
+    "load_bseg": {
+      "queryId": "a8ba61f4-db54-46f3-82a5-2a30f4732dda",
+      "queryName": "load_bseg",
+      "loadEnabled": false
+    },
+    "load_lfa1": {
+      "queryId": "8c7b6e88-41fd-469b-aced-b3e1a5e07bc9",
+      "queryName": "load_lfa1",
+      "loadEnabled": false
+    },
+    "load_bkpf_DataDestination": {
+      "queryId": "f10bb186-4d35-4c4e-906e-1c103c70214c",
+      "queryName": "load_bkpf_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "load_lfa1_DataDestination": {
+      "queryId": "dcdf1080-e191-420d-93ae-4af95d076e85",
+      "queryName": "load_lfa1_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "load_bseg_DataDestination": {
+      "queryId": "f207a4f3-f669-4c34-88c6-50ed5a029a15",
+      "queryName": "load_bseg_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "https://jguwipaed.sharepoint.com/",
+      "kind": "SharePoint",
+      "connectionId": "{\"ClusterId\":\"81f9f749-7ad8-4c01-b587-b4ac645147f7\",\"DatasourceId\":\"523f91d3-336e-4106-be27-22761d97a55f\"}"
+    },
+    {
+      "path": "https://jguwipaed-my.sharepoint.com/personal/schmisu_jguwipaed_onmicrosoft_com/",
+      "kind": "Web",
+      "connectionId": "{\"ClusterId\":\"81f9f749-7ad8-4c01-b587-b4ac645147f7\",\"DatasourceId\":\"fd26adcb-e194-4e49-89da-49acf81b9df3\"}"
+    },
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"81f9f749-7ad8-4c01-b587-b4ac645147f7\",\"DatasourceId\":\"dd30476f-b0ee-4dad-b802-4fd5a8a7f04d\"}"
+    }
+  ]
+}
