@@ -1,0 +1,610 @@
+table accounts_payable_fact
+	lineageTag: 84abde4f-b2fa-416d-84ab-3590118bc993
+	sourceLineageTag: [dbo].[accounts_payable_fact]
+
+	measure 'Total Invoice Amount' =
+			
+			CALCULATE(
+			    SUM(accounts_payable_fact[amount_local_currency]),
+			    accounts_payable_fact[document_type_description] = "Invoice",
+			    accounts_payable_fact[debit_credit_indicator] = "H"
+			)
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: a87a1e00-bd67-4ce4-b694-b7d432e8308e
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Net Payables' =
+			
+			CALCULATE(
+			    SUM(accounts_payable_fact[vendor_liability_amount]),
+			    accounts_payable_fact[account_type] = "K"
+			)
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: a89c40e3-e90d-41d4-ac89-0f6d6137a902
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Days Payable Outstanding (DPO)' = ```
+			
+			VAR TotalPayables = [Net Payables]
+			VAR DailyCOGS = DIVIDE([Total Invoice Amount], 365)
+			RETURN
+			    DIVIDE(TotalPayables, DailyCOGS, 0)
+			
+			
+			```
+		lineageTag: 28c2f59b-d86d-42b0-8e40-9fd228f56be0
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Overdue Amount' =
+			
+			CALCULATE(
+			    SUM(accounts_payable_fact[vendor_liability_amount]),
+			    accounts_payable_fact[account_type] = "K",
+			    accounts_payable_fact[document_type_description] = "Invoice",
+			    accounts_payable_fact[net_due_date] < TODAY()
+			)
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 10188b01-c580-4e08-a031-be25f75eca67
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'DPO Status' =
+			
+			SWITCH(
+			    TRUE(),
+			    [Days Payable Outstanding (DPO)] > 60, "High",
+			    [Days Payable Outstanding (DPO)] > 45, "Medium",
+			    "Low"
+			)
+		lineageTag: b53aa249-6ed3-400d-95a7-bcc7bc0d95f6
+
+		changedProperty = Name
+
+	measure 'Invoice Count' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(accounts_payable_fact[document_number]),
+			    accounts_payable_fact[document_type_description] = "Invoice"
+			)
+		formatString: 0
+		lineageTag: c0ef4052-3f8b-48b6-9e87-a6358aa15faf
+
+		changedProperty = Name
+
+	measure 'Payment Status' =
+			
+			SWITCH(
+			    TRUE(),
+			    [Overdue Amount] > 100000, "Critical",
+			    [Overdue Amount] > 50000, "Warning",
+			    [Overdue Amount] > 0, "Attention",
+			    "Good"
+			)
+		lineageTag: 1c5aaf85-673e-40b7-a749-934f70f86e63
+
+		changedProperty = Name
+
+	measure '% of Total Spend' =
+			
+			DIVIDE(
+			    [Total Invoice Amount],
+			    CALCULATE([Total Invoice Amount], ALL(accounts_payable_fact)),
+			    0
+			)
+		lineageTag: 05e41197-fa95-461e-b14d-26ee96fdf30b
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MANDT
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 5d28e90a-c2a4-48f8-9a05-03de8bb9e7e7
+		sourceLineageTag: MANDT
+		summarizeBy: none
+		sourceColumn: MANDT
+
+		annotation SummarizationSetBy = Automatic
+
+	column company_code
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 668e6334-89ab-4a3b-a7a4-3035ed9c523b
+		sourceLineageTag: company_code
+		summarizeBy: none
+		sourceColumn: company_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column document_number
+		dataType: int64
+		formatString: 0
+		sourceProviderType: varchar(8000)
+		lineageTag: d3f1b9c4-777d-453c-bc06-47f8f58ca841
+		sourceLineageTag: document_number
+		summarizeBy: sum
+		sourceColumn: document_number
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c24ae0f5-97c1-47c2-8e6a-62d72bd6332d
+		sourceLineageTag: fiscal_year
+		summarizeBy: sum
+		sourceColumn: fiscal_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column line_item_number
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 8d2ef116-bb7c-4cc7-8a0e-c6bac9136622
+		sourceLineageTag: line_item_number
+		summarizeBy: none
+		sourceColumn: line_item_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column document_type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: d72f15e8-4128-43e9-9f6d-f66d2eed57b7
+		sourceLineageTag: document_type
+		summarizeBy: none
+		sourceColumn: document_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column document_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: b723f7eb-005c-4065-a2af-e28a6edca024
+		sourceLineageTag: document_date
+		summarizeBy: none
+		sourceColumn: document_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column posting_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		sourceProviderType: date
+		lineageTag: c1ebc0df-1e01-43f2-9cf2-ee8767fbdf9b
+		sourceLineageTag: posting_date
+		summarizeBy: none
+		sourceColumn: posting_date
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column currency
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 608d2e87-123d-48b7-9251-8f28a810547e
+		sourceLineageTag: currency
+		summarizeBy: none
+		sourceColumn: currency
+
+		annotation SummarizationSetBy = Automatic
+
+	column user_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 14efdcb3-cd0d-459d-9440-923496c592fa
+		sourceLineageTag: user_name
+		summarizeBy: none
+		sourceColumn: user_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column document_header_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 7952ff03-43ec-439a-aa6c-69a5fe54533a
+		sourceLineageTag: document_header_text
+		summarizeBy: none
+		sourceColumn: document_header_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column reference_document
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 567295c9-1940-478f-aaf4-bd2e7b8ed12d
+		sourceLineageTag: reference_document
+		summarizeBy: none
+		sourceColumn: reference_document
+
+		annotation SummarizationSetBy = Automatic
+
+	column transaction_code
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: f4a9f1c2-4b3f-409f-a701-37455407e0db
+		sourceLineageTag: transaction_code
+		summarizeBy: none
+		sourceColumn: transaction_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column debit_credit_indicator
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 1405d77c-f82f-4946-b421-3408fff5be50
+		sourceLineageTag: debit_credit_indicator
+		summarizeBy: none
+		sourceColumn: debit_credit_indicator
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 05409286-a4e3-4a38-88ac-7bf11df2fae4
+		sourceLineageTag: account_type
+		summarizeBy: none
+		sourceColumn: account_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_number
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: a3109935-3d27-4713-bbf1-276d2c237f49
+		sourceLineageTag: vendor_number
+		summarizeBy: none
+		sourceColumn: vendor_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column gl_account
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 74dcf6ed-2d90-4c55-8774-a1cb07a1aa73
+		sourceLineageTag: gl_account
+		summarizeBy: none
+		sourceColumn: gl_account
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount_local_currency
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(15, 2)
+		lineageTag: 88b6a15d-d820-4a41-8f15-226076f1f91a
+		sourceLineageTag: amount_local_currency
+		summarizeBy: sum
+		sourceColumn: amount_local_currency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column amount_document_currency
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(15, 2)
+		lineageTag: 68881b41-1c6f-4c2a-9591-1106e5638f09
+		sourceLineageTag: amount_document_currency
+		summarizeBy: sum
+		sourceColumn: amount_document_currency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column tax_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(15, 2)
+		lineageTag: 808585d9-df4b-480a-a5af-0e7d9b37e56d
+		sourceLineageTag: tax_amount
+		summarizeBy: sum
+		sourceColumn: tax_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column assignment_reference
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 5337ddb6-be38-4d61-abfa-cb9b7b3705fa
+		sourceLineageTag: assignment_reference
+		summarizeBy: none
+		sourceColumn: assignment_reference
+
+		annotation SummarizationSetBy = Automatic
+
+	column line_item_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b0d4dedf-87c0-4273-a869-e935c70ac6fd
+		sourceLineageTag: line_item_text
+		summarizeBy: none
+		sourceColumn: line_item_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column baseline_payment_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: date
+		lineageTag: 6b9248b7-7826-4775-b006-0b588321f9aa
+		sourceLineageTag: baseline_payment_date
+		summarizeBy: none
+		sourceColumn: baseline_payment_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column cash_discount_days_1
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1954bfaa-ae40-40f3-8c9d-0a67456ad595
+		sourceLineageTag: cash_discount_days_1
+		summarizeBy: sum
+		sourceColumn: cash_discount_days_1
+
+		annotation SummarizationSetBy = Automatic
+
+	column cash_discount_days_2
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 18800141-a7a6-4354-a331-43baf4e1b7f0
+		sourceLineageTag: cash_discount_days_2
+		summarizeBy: sum
+		sourceColumn: cash_discount_days_2
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_terms
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4d6acff6-3279-4c76-bf59-ea6d2aada107
+		sourceLineageTag: payment_terms
+		summarizeBy: none
+		sourceColumn: payment_terms
+
+		annotation SummarizationSetBy = Automatic
+
+	column cash_discount_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(15, 2)
+		lineageTag: b4f6f644-2874-49c4-b300-a308202214d6
+		sourceLineageTag: cash_discount_amount
+		summarizeBy: sum
+		sourceColumn: cash_discount_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column vendor_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: f04895ba-00d7-4c3a-9c38-7089531a022b
+		sourceLineageTag: vendor_name
+		summarizeBy: none
+		sourceColumn: vendor_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_name_2
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 7b382c9b-d39f-4ef5-a864-dd1001aa9885
+		sourceLineageTag: vendor_name_2
+		summarizeBy: none
+		sourceColumn: vendor_name_2
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_city
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 2a36467d-bfe8-44a5-a34c-d0a61afc426c
+		sourceLineageTag: vendor_city
+		summarizeBy: none
+		sourceColumn: vendor_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_country
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b3bdfe5c-1071-4a5e-b9a5-02512dcd0aed
+		sourceLineageTag: vendor_country
+		summarizeBy: none
+		sourceColumn: vendor_country
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_postal_code
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: fefc571d-42cc-4b50-ae49-af1f3621f9ad
+		sourceLineageTag: vendor_postal_code
+		summarizeBy: none
+		sourceColumn: vendor_postal_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_street
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b8c5fda8-f0dd-4bd6-a03e-db7c022c67a9
+		sourceLineageTag: vendor_street
+		summarizeBy: none
+		sourceColumn: vendor_street
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_tax_number_1
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 58ccc327-4765-42f4-8e00-55bd8fa5404e
+		sourceLineageTag: vendor_tax_number_1
+		summarizeBy: none
+		sourceColumn: vendor_tax_number_1
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_vat_number
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b4c65f0a-e5c2-412e-920f-6da42a146649
+		sourceLineageTag: vendor_vat_number
+		summarizeBy: none
+		sourceColumn: vendor_vat_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_account_group
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3e08f1f9-fb41-49f5-8729-280ecd1dd072
+		sourceLineageTag: vendor_account_group
+		summarizeBy: none
+		sourceColumn: vendor_account_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column signed_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(15, 2)
+		lineageTag: bb51f56e-417d-4498-a3fe-a083eff72a85
+		sourceLineageTag: signed_amount
+		summarizeBy: sum
+		sourceColumn: signed_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column vendor_liability_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(15, 2)
+		lineageTag: af383ba7-5308-4575-9eba-8a9aca1b3bec
+		sourceLineageTag: vendor_liability_amount
+		summarizeBy: sum
+		sourceColumn: vendor_liability_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column document_type_description
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: ab5661e1-5464-4e7f-b433-16953cc7058c
+		sourceLineageTag: document_type_description
+		summarizeBy: none
+		sourceColumn: document_type_description
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_due_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 26e7e808-0798-43a0-abe6-d5a7c71c96b6
+		sourceLineageTag: net_due_date
+		summarizeBy: none
+		sourceColumn: net_due_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column cash_discount_due_date
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: fc922dfb-0cac-49ae-8fb6-a4225b3c504c
+		sourceLineageTag: cash_discount_due_date
+		summarizeBy: none
+		sourceColumn: cash_discount_due_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_missing_vendor
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0ff1782b-2acd-4024-8da5-06e5260b95c2
+		sourceLineageTag: is_missing_vendor
+		summarizeBy: sum
+		sourceColumn: is_missing_vendor
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_zero_amount
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: c820203a-3b0b-4478-9620-41400d0b9784
+		sourceLineageTag: is_zero_amount
+		summarizeBy: sum
+		sourceColumn: is_zero_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_vendor_not_in_master
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: cd146179-4118-4a85-a9f6-0e6de5c04b9b
+		sourceLineageTag: is_vendor_not_in_master
+		summarizeBy: sum
+		sourceColumn: is_vendor_not_in_master
+
+		annotation SummarizationSetBy = Automatic
+
+	column etl_load_timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 6bea77cf-e1a6-47dc-a5cc-38f97b1898bb
+		sourceLineageTag: etl_load_timestamp
+		summarizeBy: none
+		sourceColumn: etl_load_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	partition accounts_payable_fact = entity
+		mode: directLake
+		source
+			entityName: accounts_payable_fact
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

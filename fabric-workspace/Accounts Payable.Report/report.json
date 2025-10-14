@@ -1,0 +1,144 @@
+{
+  "config": "{\"version\":\"5.67\",\"themeCollection\":{\"baseTheme\":{\"name\":\"CY25SU10\",\"type\":2,\"version\":{\"visual\":\"2.1.0\",\"report\":\"3.0.0\",\"page\":\"2.3.0\"}}},\"activeSectionIndex\":0,\"defaultDrillFilterOtherVisuals\":true,\"linguisticSchemaSyncVersion\":0,\"settings\":{\"useNewFilterPaneExperience\":true,\"allowChangeFilterTypes\":true,\"useStylableVisualContainerHeader\":true,\"queryLimitOption\":6,\"useEnhancedTooltips\":true,\"exportDataMode\":1,\"useDefaultAggregateDisplayName\":true},\"objects\":{\"section\":[{\"properties\":{\"verticalAlignment\":{\"expr\":{\"Literal\":{\"Value\":\"'Top'\"}}}}}]}}",
+  "layoutOptimization": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "CY25SU10",
+            "path": "BaseThemes/CY25SU10.json",
+            "type": 202
+          }
+        ],
+        "name": "SharedResources",
+        "type": 2
+      }
+    }
+  ],
+  "sections": [
+    {
+      "config": "{\"visibility\":1}",
+      "displayName": "Page 2",
+      "displayOption": 1,
+      "filters": "[]",
+      "height": 720.00,
+      "name": "528459b2deb0300ae0c0",
+      "ordinal": 1,
+      "visualContainers": [
+        {
+          "config": "{\"name\":\"0744fc95c26747365d7c\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":0,\"z\":0,\"width\":433.6842105263158,\"height\":720,\"tabOrder\":0}}],\"singleVisual\":{\"visualType\":\"tableEx\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.posting_date\"},{\"queryRef\":\"accounts_payable_fact.document_number\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"posting_date\"},\"Name\":\"accounts_payable_fact.posting_date\",\"NativeReferenceName\":\"posting_date\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"document_number\"},\"Name\":\"accounts_payable_fact.document_number\",\"NativeReferenceName\":\"document_number\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"document_number\"}}}]},\"drillFilterOtherVisuals\":true}}",
+          "filters": "[]",
+          "height": 720.00,
+          "width": 433.68,
+          "x": 0.00,
+          "y": 0.00,
+          "z": 0.00
+        }
+      ],
+      "width": 1280.00
+    },
+    {
+      "config": "{}",
+      "displayName": "Overview",
+      "displayOption": 1,
+      "filters": "[]",
+      "height": 720.00,
+      "name": "f0051f7903e059637398",
+      "visualContainers": [
+        {
+          "config": "{\"name\":\"0da6562da9b496a3c010\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":0,\"z\":0,\"width\":210.51978277734676,\"height\":150.93871217998446,\"tabOrder\":0}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.Total Invoice Amount\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"},\"Name\":\"accounts_payable_fact.Total Invoice Amount\",\"NativeReferenceName\":\"Total Invoice Amount\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "filters": "[]",
+          "height": 150.94,
+          "width": 210.52,
+          "x": 0.00,
+          "y": 0.00,
+          "z": 0.00
+        },
+        {
+          "config": "{\"name\":\"10c53f5f7b1c230603d0\",\"layouts\":[{\"id\":0,\"position\":{\"x\":210.51978277734676,\"y\":0,\"z\":3000,\"width\":210.51978277734676,\"height\":150.93871217998446,\"tabOrder\":3000}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.Overdue Amount\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Overdue Amount\"},\"Name\":\"accounts_payable_fact.Overdue Amount\",\"NativeReferenceName\":\"Overdue Amount\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Overdue Amount\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "filters": "[]",
+          "height": 150.94,
+          "width": 210.52,
+          "x": 210.52,
+          "y": 0.00,
+          "z": 3000.00
+        },
+        {
+          "config": "{\"name\":\"1606777016eeab3c4e28\",\"layouts\":[{\"id\":0,\"position\":{\"x\":605.7408844065167,\"y\":0,\"z\":2000,\"width\":263.1497284716835,\"height\":150.93871217998446,\"tabOrder\":2000}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.Days Payable Outstanding (DPO)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Days Payable Outstanding (DPO)\"},\"Name\":\"accounts_payable_fact.Days Payable Outstanding (DPO)\",\"NativeReferenceName\":\"Days Payable Outstanding (DPO)\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Days Payable Outstanding (DPO)\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true,\"objects\":{},\"vcObjects\":{}}}",
+          "filters": "[]",
+          "height": 150.94,
+          "width": 263.15,
+          "x": 605.74,
+          "y": 0.00,
+          "z": 2000.00
+        },
+        {
+          "config": "{\"name\":\"38f48a3c85a03d85c5ad\",\"layouts\":[{\"id\":0,\"position\":{\"x\":757.8947368421052,\"y\":151.57894736842104,\"z\":6001,\"width\":522.1052631578947,\"height\":202.10526315789474,\"tabOrder\":6001}}],\"singleVisual\":{\"visualType\":\"tableEx\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.vendor_name\"},{\"queryRef\":\"accounts_payable_fact.Total Invoice Amount\"},{\"queryRef\":\"accounts_payable_fact.Invoice Count\"},{\"queryRef\":\"accounts_payable_fact.% of Total Spend\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"vendor_name\"},\"Name\":\"accounts_payable_fact.vendor_name\",\"NativeReferenceName\":\"Vendor\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"},\"Name\":\"accounts_payable_fact.Total Invoice Amount\",\"NativeReferenceName\":\"Total Invoice Amount\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Invoice Count\"},\"Name\":\"accounts_payable_fact.Invoice Count\",\"NativeReferenceName\":\"# Invoices\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"% of Total Spend\"},\"Name\":\"accounts_payable_fact.% of Total Spend\",\"NativeReferenceName\":\"% of Total Spend\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"}}}]},\"columnProperties\":{\"accounts_payable_fact.Invoice Count\":{\"displayName\":\"# Invoices\"},\"accounts_payable_fact.vendor_name\":{\"displayName\":\"Vendor\"}},\"drillFilterOtherVisuals\":true,\"objects\":{\"columnWidth\":[{\"properties\":{\"value\":{\"expr\":{\"Literal\":{\"Value\":\"128.52311009960292D\"}}}},\"selector\":{\"metadata\":\"accounts_payable_fact.vendor_name\"}},{\"properties\":{\"value\":{\"expr\":{\"Literal\":{\"Value\":\"91.77193169220072D\"}}}},\"selector\":{\"metadata\":\"accounts_payable_fact.Invoice Count\"}},{\"properties\":{\"value\":{\"expr\":{\"Literal\":{\"Value\":\"139.70174686323622D\"}}}},\"selector\":{\"metadata\":\"accounts_payable_fact.Total Invoice Amount\"}},{\"properties\":{\"value\":{\"expr\":{\"Literal\":{\"Value\":\"135.47369351859953D\"}}}},\"selector\":{\"metadata\":\"accounts_payable_fact.% of Total Spend\"}}]}}}",
+          "filters": "[{\"name\":\"9cc686f0639ce603acba\",\"expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Entity\":\"accounts_payable_fact\"}},\"Property\":\"vendor_name\"}},\"filter\":{\"Version\":2,\"From\":[{\"Name\":\"subquery\",\"Expression\":{\"Subquery\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"vendor_name\"},\"Name\":\"field\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"}}}],\"Top\":5}}},\"Type\":2},{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"vendor_name\"}}],\"Table\":{\"SourceRef\":{\"Source\":\"subquery\"}}}}}]},\"type\":\"TopN\",\"howCreated\":1}]",
+          "height": 202.11,
+          "width": 522.11,
+          "x": 757.89,
+          "y": 151.58,
+          "z": 6001.00
+        },
+        {
+          "config": "{\"name\":\"409d5cba534501627c19\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":134.73684210526315,\"z\":5000,\"width\":724.2105263157895,\"height\":218.94736842105263,\"tabOrder\":5000}}],\"singleVisual\":{\"visualType\":\"clusteredColumnChart\",\"projections\":{\"Y\":[{\"queryRef\":\"accounts_payable_fact.Invoice Count\"}],\"Category\":[{\"queryRef\":\"accounts_payable_fact.posting_date\",\"active\":true}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Invoice Count\"},\"Name\":\"accounts_payable_fact.Invoice Count\",\"NativeReferenceName\":\"Invoice Count\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"posting_date\"},\"Name\":\"accounts_payable_fact.posting_date\",\"NativeReferenceName\":\"posting_date\"}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"posting_date\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true,\"objects\":{\"labels\":[{\"properties\":{\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 218.95,
+          "width": 724.21,
+          "x": 0.00,
+          "y": 134.74,
+          "z": 5000.00
+        },
+        {
+          "config": "{\"name\":\"61761c1cdc93e8a4a858\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":373.3333333333333,\"z\":4000,\"width\":868.7719298245614,\"height\":346.66666666666663,\"tabOrder\":4000}}],\"singleVisual\":{\"visualType\":\"lineChart\",\"projections\":{\"Category\":[{\"queryRef\":\"accounts_payable_fact.posting_date\",\"active\":true}],\"Y\":[{\"queryRef\":\"accounts_payable_fact.Total Invoice Amount\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"posting_date\"},\"Name\":\"accounts_payable_fact.posting_date\",\"NativeReferenceName\":\"Posting Date\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"},\"Name\":\"accounts_payable_fact.Total Invoice Amount\",\"NativeReferenceName\":\"Total Invoice Amount\"}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"posting_date\"}}}]},\"columnProperties\":{\"accounts_payable_fact.posting_date\":{\"displayName\":\"Posting Date\"}},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "filters": "[]",
+          "height": 346.67,
+          "width": 868.77,
+          "x": 0.00,
+          "y": 373.33,
+          "z": 4000.00
+        },
+        {
+          "config": "{\"name\":\"90c0e634d444744374d5\",\"layouts\":[{\"id\":0,\"position\":{\"x\":395.2211016291699,\"y\":0,\"z\":1000,\"width\":210.51978277734676,\"height\":150.93871217998446,\"tabOrder\":1000}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.Net Payables\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Net Payables\"},\"Name\":\"accounts_payable_fact.Net Payables\",\"NativeReferenceName\":\"Net Payables\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Net Payables\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "filters": "[]",
+          "height": 150.94,
+          "width": 210.52,
+          "x": 395.22,
+          "y": 0.00,
+          "z": 1000.00
+        },
+        {
+          "config": "{\"name\":\"b2581afbcc705239b38a\",\"layouts\":[{\"id\":0,\"position\":{\"x\":868.7719298245614,\"y\":0,\"z\":6003,\"width\":263.859649122807,\"height\":134.73684210526315,\"tabOrder\":6003}}],\"singleVisual\":{\"visualType\":\"slicer\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.fiscal_year\",\"active\":true}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"fiscal_year\"},\"Name\":\"accounts_payable_fact.fiscal_year\",\"NativeReferenceName\":\"Fiscal Year\"}]},\"columnProperties\":{\"accounts_payable_fact.fiscal_year\":{\"displayName\":\"Fiscal Year\"}},\"drillFilterOtherVisuals\":true,\"objects\":{\"data\":[{\"properties\":{\"mode\":{\"expr\":{\"Literal\":{\"Value\":\"'Between'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 134.74,
+          "width": 263.86,
+          "x": 868.77,
+          "y": 0.00,
+          "z": 6003.00
+        },
+        {
+          "config": "{\"name\":\"b6bef6b92a6ea8542a32\",\"layouts\":[{\"id\":0,\"position\":{\"x\":1132.6315789473683,\"y\":0,\"z\":6002,\"width\":147.36842105263156,\"height\":134.73684210526315,\"tabOrder\":6002}}],\"singleVisual\":{\"visualType\":\"slicer\",\"projections\":{\"Values\":[{\"queryRef\":\"accounts_payable_fact.vendor_country\",\"active\":true}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"vendor_country\"},\"Name\":\"accounts_payable_fact.vendor_country\",\"NativeReferenceName\":\"Vendor Country\"}]},\"columnProperties\":{\"accounts_payable_fact.vendor_country\":{\"displayName\":\"Vendor Country\"}},\"drillFilterOtherVisuals\":true,\"objects\":{\"data\":[{\"properties\":{\"mode\":{\"expr\":{\"Literal\":{\"Value\":\"'Dropdown'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 134.74,
+          "width": 147.37,
+          "x": 1132.63,
+          "y": 0.00,
+          "z": 6002.00
+        },
+        {
+          "config": "{\"name\":\"bd5ccc438ba9e3dea2d5\",\"layouts\":[{\"id\":0,\"position\":{\"x\":887.0175438596491,\"y\":373.3333333333333,\"z\":6000,\"width\":392.98245614035085,\"height\":346.66666666666663,\"tabOrder\":6000}}],\"singleVisual\":{\"visualType\":\"treemap\",\"projections\":{\"Group\":[{\"queryRef\":\"accounts_payable_fact.company_code\",\"active\":true}],\"Tooltips\":[{\"queryRef\":\"accounts_payable_fact.Payment Status\"}],\"Values\":[{\"queryRef\":\"accounts_payable_fact.Total Invoice Amount\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"accounts_payable_fact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"company_code\"},\"Name\":\"accounts_payable_fact.company_code\",\"NativeReferenceName\":\"company_code\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Payment Status\"},\"Name\":\"accounts_payable_fact.Payment Status\",\"NativeReferenceName\":\"Payment Status\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"},\"Name\":\"accounts_payable_fact.Total Invoice Amount\",\"NativeReferenceName\":\"Total Invoice Amount\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Total Invoice Amount\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "filters": "[]",
+          "height": 346.67,
+          "width": 392.98,
+          "x": 887.02,
+          "y": 373.33,
+          "z": 6000.00
+        }
+      ],
+      "width": 1280.00
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Accounts Payable"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "1dad07a5-b975-9f53-4139-38484f0ea2ec"
+  }
+}
