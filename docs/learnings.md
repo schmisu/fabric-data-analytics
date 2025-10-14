@@ -178,6 +178,40 @@ NULLIF(TRIM(field), '') AS field_clean
 
 ---
 
+### Challenge 6: Pipeline Parameters with Dataflow Gen2
+**Problem:** Dataflow Gen2 with parameters runs successfully when executed independently, but fails when called from a Data Pipeline.
+
+**Root Cause:** Dataflow parameters are not automatically exposed to the pipeline by default.
+
+**Symptoms:**
+- Dataflow works fine in isolation
+- Pipeline fails with parameter-related errors
+- Parameters use default values instead of pipeline-provided values
+
+**Solution:**
+In Dataflow Gen2 settings:
+1. Go to **Dataflow settings** → **Options**
+2. Under **Parameters** section
+3. ✅ **Check the box** "Make parameters available to pipeline"
+4. Save and retry pipeline
+
+**Alternative Approach:**
+Explicitly pass parameters in pipeline activity:
+```json
+{
+  "type": "DataflowActivity",
+  "parameters": {
+    "ParameterName": "@pipeline().parameters.PipelinePar ameter"
+  }
+}
+```
+
+**Learning:** Dataflow parameters are workspace-scoped by default. Must explicitly enable pipeline access for orchestration scenarios.
+
+**Impact:** This enables flexible, environment-specific configurations (dev/test/prod SharePoint sites, different file paths, etc.).
+
+---
+
 ## What I'd Do Differently
 
 ### 1. Incremental Refresh from the Start
