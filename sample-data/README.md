@@ -1,5 +1,7 @@
 # SAP Sample Data
 
+> ⚠️ **Synthetic Data Notice:** The sample data for this portfolio project was synthetically generated for demonstration purposes. Vendor names reference real companies, but all transaction data, amounts, and dates are fictional. For production use, replace with actual SAP exports.
+
 This folder is for your SAP sample data files. **Data files are never committed to Git** for security and best practices.
 
 ## Required Files
