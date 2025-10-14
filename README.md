@@ -236,12 +236,9 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Contact
 
-**Project by**: Susanne Schmidt
-**LinkedIn**: [Your LinkedIn]
+**Project by**: Susanne Schmidt [LinkedIn](https://www.linkedin.com/in/dr-susanne-schmidt/)
 **GitHub**: [@schmisu](https://github.com/schmisu)
 
 ---
-
-**Built with Microsoft Fabric** | **Powered by Power BI** | **SAP Analytics**
 
 *Last updated: October 2025*
