@@ -1,6 +1,10 @@
 # SAP Sample Data
 
-This folder contains realistic German company sample data for the Accounts Payable analytics solution.
+This folder is for your SAP sample data files. **Data files are never committed to Git** for security and best practices.
+
+## Required Files
+
+To run this project, place the following CSV files in this folder:
 
 ## Files
 
@@ -73,13 +77,24 @@ Sample includes well-known German companies:
 - **Date Formats**: YYYYMMDD (SAP standard)
 - **Currency**: All amounts in EUR
 
+## Getting Sample Data
+
+### Option 1: Use Your Own SAP Data
+
+Export from SAP using SE16/SE16N or a custom program, then save as CSV files in this folder.
+
+### Option 2: Generate Sample Data
+
+You can generate realistic sample data using the project's data generation scripts (if available) or create your own test data following the structure above.
+
 ## Usage in Project
 
-1. **Ingestion**: Load via Dataflow Gen2 to Lakehouse tables
-2. **Transformation**: Process with SQL notebook (`sql/create_ap_fact_table.sql`)
-3. **Analytics**: Power BI semantic model and reports
+1. **Place CSV files** in this `sample-data/` folder
+2. **Ingestion**: Load via Dataflow Gen2 to Lakehouse tables
+3. **Transformation**: Process with SQL notebook (`sql/create_ap_fact_table.sql`)
+4. **Analytics**: Power BI semantic model and reports
 
-## Replacing with Your Data
+## Using Your Own SAP Data
 
 To use your own SAP data:
 

@@ -100,13 +100,16 @@ fabric-data-analytics/
 
 ## Sample Data
 
-The project includes realistic German company sample data:
-- **50 vendors** (Siemens, BASF, Deutsche Telekom, etc.)
-- **142 accounting documents** (Jan-Dec 2024)
-- **270 line items** with EUR 3.5M+ transaction volume
-- **Realistic patterns**: VAT, payment terms, cash discounts
+The project is designed to work with SAP Accounts Payable data:
+- **BKPF**: Document headers
+- **BSEG**: Line items
+- **LFA1**: Vendor master data
 
-> Note: Sample data is included in repository. Replace with your own SAP exports for production use.
+The `sample-data/` folder contains a README with the required data structure and instructions for:
+- Using your own SAP exports
+- Generating sample data for testing
+
+> **Note**: Data files (CSV) are never committed to Git. You'll need to provide your own data or generate sample data following the structure in `sample-data/README.md`.
 
 ## Getting Started
 

@@ -55,6 +55,14 @@ logs/
 *.tmp
 *.temp
 
+# Data files - never commit data to Git
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.json
+*.xml
+
 # Project-specific development files
 dev/
 fabric-templates/
