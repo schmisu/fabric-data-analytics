@@ -55,9 +55,6 @@ logs/
 *.tmp
 *.temp
 
-# Project-specific
-PROJECT_STATUS.md
-PROJECT_README.md
-README_SAP_Sample_Data.md
+# Project-specific development files
+dev/
 fabric-templates/
-data_validation_queries.sql
