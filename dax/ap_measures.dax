@@ -1,0 +1,306 @@
+-- =====================================================
+-- Accounts Payable - DAX Measures
+-- =====================================================
+-- Purpose: Core KPI measures for AP analytics in Power BI
+-- Usage: Copy these measures into your semantic model
+-- =====================================================
+
+-- =====================================================
+-- BASE MEASURES - Foundation metrics
+-- =====================================================
+
+Total Invoice Amount =
+CALCULATE(
+    SUM(accounts_payable_fact[amount_local_currency]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[debit_credit_indicator] = "H"
+)
+
+Total Payment Amount =
+CALCULATE(
+    SUM(accounts_payable_fact[amount_local_currency]),
+    accounts_payable_fact[document_type] = "Payment",
+    accounts_payable_fact[debit_credit_indicator] = "S"
+)
+
+Net Payables =
+CALCULATE(
+    SUM(accounts_payable_fact[vendor_liability_amount]),
+    accounts_payable_fact[account_type] = "K"
+)
+
+Invoice Count =
+CALCULATE(
+    DISTINCTCOUNT(accounts_payable_fact[document_number]),
+    accounts_payable_fact[document_type] = "Invoice"
+)
+
+Vendor Count =
+DISTINCTCOUNT(accounts_payable_fact[vendor_number])
+
+-- =====================================================
+-- AGING ANALYSIS - Days Past Due
+-- =====================================================
+
+Days Payable Outstanding (DPO) =
+VAR TotalPayables = [Net Payables]
+VAR DailyCOGS = DIVIDE([Total Invoice Amount], 365)
+RETURN
+    DIVIDE(TotalPayables, DailyCOGS, 0)
+
+Overdue Amount =
+CALCULATE(
+    SUM(accounts_payable_fact[vendor_liability_amount]),
+    accounts_payable_fact[account_type] = "K",
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[net_due_date] < TODAY()
+)
+
+Overdue Invoices =
+CALCULATE(
+    DISTINCTCOUNT(accounts_payable_fact[document_number]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[net_due_date] < TODAY()
+)
+
+Aging 0-30 Days =
+CALCULATE(
+    SUM(accounts_payable_fact[vendor_liability_amount]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[net_due_date] >= TODAY() - 30,
+    accounts_payable_fact[net_due_date] < TODAY()
+)
+
+Aging 31-60 Days =
+CALCULATE(
+    SUM(accounts_payable_fact[vendor_liability_amount]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[net_due_date] >= TODAY() - 60,
+    accounts_payable_fact[net_due_date] < TODAY() - 30
+)
+
+Aging 61-90 Days =
+CALCULATE(
+    SUM(accounts_payable_fact[vendor_liability_amount]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[net_due_date] >= TODAY() - 90,
+    accounts_payable_fact[net_due_date] < TODAY() - 60
+)
+
+Aging 90+ Days =
+CALCULATE(
+    SUM(accounts_payable_fact[vendor_liability_amount]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[net_due_date] < TODAY() - 90
+)
+
+% Overdue =
+DIVIDE([Overdue Amount], [Total Invoice Amount], 0)
+
+-- =====================================================
+-- PAYMENT PERFORMANCE
+-- =====================================================
+
+Average Payment Days =
+VAR PaymentTable =
+    FILTER(
+        accounts_payable_fact,
+        accounts_payable_fact[document_type] = "Payment"
+    )
+RETURN
+    AVERAGEX(
+        PaymentTable,
+        DATEDIFF(
+            accounts_payable_fact[document_date],
+            accounts_payable_fact[posting_date],
+            DAY
+        )
+    )
+
+On-Time Payment Rate =
+VAR OnTimePayments =
+    CALCULATE(
+        DISTINCTCOUNT(accounts_payable_fact[document_number]),
+        accounts_payable_fact[document_type] = "Payment",
+        accounts_payable_fact[posting_date] <= accounts_payable_fact[net_due_date]
+    )
+VAR TotalPayments =
+    CALCULATE(
+        DISTINCTCOUNT(accounts_payable_fact[document_number]),
+        accounts_payable_fact[document_type] = "Payment"
+    )
+RETURN
+    DIVIDE(OnTimePayments, TotalPayments, 0)
+
+-- =====================================================
+-- CASH DISCOUNT TRACKING
+-- =====================================================
+
+Total Cash Discount Available =
+CALCULATE(
+    SUM(accounts_payable_fact[cash_discount_amount]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[cash_discount_due_date] >= TODAY()
+)
+
+Cash Discount Taken =
+CALCULATE(
+    SUM(accounts_payable_fact[cash_discount_amount]),
+    accounts_payable_fact[document_type] = "Payment",
+    accounts_payable_fact[posting_date] <= accounts_payable_fact[cash_discount_due_date]
+)
+
+Cash Discount Utilization % =
+DIVIDE([Cash Discount Taken], [Total Cash Discount Available], 0)
+
+Potential Savings =
+CALCULATE(
+    SUM(accounts_payable_fact[cash_discount_amount]),
+    accounts_payable_fact[document_type] = "Invoice",
+    accounts_payable_fact[cash_discount_due_date] >= TODAY()
+)
+
+-- =====================================================
+-- TIME INTELLIGENCE - Period Comparisons
+-- =====================================================
+
+Total Invoice Amount YTD =
+TOTALYTD([Total Invoice Amount], accounts_payable_fact[posting_date])
+
+Total Invoice Amount PY =
+CALCULATE(
+    [Total Invoice Amount],
+    SAMEPERIODLASTYEAR(accounts_payable_fact[posting_date])
+)
+
+Invoice Amount YoY Growth =
+VAR CurrentYear = [Total Invoice Amount]
+VAR PriorYear = [Total Invoice Amount PY]
+RETURN
+    DIVIDE(CurrentYear - PriorYear, PriorYear, 0)
+
+Invoice Amount YoY Growth % =
+FORMAT([Invoice Amount YoY Growth], "0.0%")
+
+Total Invoice Amount MTD =
+TOTALMTD([Total Invoice Amount], accounts_payable_fact[posting_date])
+
+Total Invoice Amount QTD =
+TOTALQTD([Total Invoice Amount], accounts_payable_fact[posting_date])
+
+MoM Invoice Growth =
+VAR CurrentMonth = [Total Invoice Amount MTD]
+VAR PriorMonth = CALCULATE(
+    [Total Invoice Amount],
+    DATEADD(accounts_payable_fact[posting_date], -1, MONTH)
+)
+RETURN
+    DIVIDE(CurrentMonth - PriorMonth, PriorMonth, 0)
+
+-- =====================================================
+-- VENDOR SEGMENTATION & ANALYSIS
+-- =====================================================
+
+Average Invoice Value =
+DIVIDE([Total Invoice Amount], [Invoice Count], 0)
+
+Top 10 Vendors by Spend =
+CALCULATE(
+    [Total Invoice Amount],
+    TOPN(
+        10,
+        ALL(accounts_payable_fact[vendor_name]),
+        [Total Invoice Amount],
+        DESC
+    )
+)
+
+Vendor Concentration % =
+DIVIDE([Top 10 Vendors by Spend], [Total Invoice Amount], 0)
+
+Active Vendors (Current Month) =
+CALCULATE(
+    DISTINCTCOUNT(accounts_payable_fact[vendor_number]),
+    accounts_payable_fact[posting_date] >= STARTOFMONTH(TODAY()),
+    accounts_payable_fact[posting_date] <= TODAY()
+)
+
+-- =====================================================
+-- DATA QUALITY METRICS
+-- =====================================================
+
+Missing Vendor Count =
+CALCULATE(
+    COUNTROWS(accounts_payable_fact),
+    accounts_payable_fact[is_missing_vendor] = 1
+)
+
+Data Quality Score =
+VAR TotalRecords = COUNTROWS(accounts_payable_fact)
+VAR QualityIssues = [Missing Vendor Count]
+RETURN
+    DIVIDE(TotalRecords - QualityIssues, TotalRecords, 0)
+
+-- =====================================================
+-- DYNAMIC RANKING & CONTEXT-AWARE MEASURES
+-- =====================================================
+
+Vendor Rank by Spend =
+RANKX(
+    ALL(accounts_payable_fact[vendor_name]),
+    [Total Invoice Amount],
+    ,
+    DESC,
+    DENSE
+)
+
+Running Total Invoice Amount =
+CALCULATE(
+    [Total Invoice Amount],
+    FILTER(
+        ALLSELECTED(accounts_payable_fact[posting_date]),
+        accounts_payable_fact[posting_date] <= MAX(accounts_payable_fact[posting_date])
+    )
+)
+
+% of Total Spend =
+DIVIDE(
+    [Total Invoice Amount],
+    CALCULATE([Total Invoice Amount], ALL(accounts_payable_fact)),
+    0
+)
+
+-- =====================================================
+-- CONDITIONAL FORMATTING HELPERS
+-- =====================================================
+
+Payment Status =
+SWITCH(
+    TRUE(),
+    [Overdue Amount] > 100000, "Critical",
+    [Overdue Amount] > 50000, "Warning",
+    [Overdue Amount] > 0, "Attention",
+    "Good"
+)
+
+DPO Status =
+SWITCH(
+    TRUE(),
+    [Days Payable Outstanding (DPO)] > 60, "High",
+    [Days Payable Outstanding (DPO)] > 45, "Medium",
+    "Low"
+)
+
+-- =====================================================
+-- Usage Tips:
+-- =====================================================
+-- 1. Copy measures into Power BI Desktop
+-- 2. Create a dedicated "Measures" table for organization
+-- 3. Use [Ctrl+F] to find specific measure categories
+-- 4. Combine with slicers for: Vendor, Posting Date, Company Code
+-- 5. Key visuals to create:
+--    - Aging analysis (Stacked Bar Chart)
+--    - YoY trends (Line Chart)
+--    - Vendor concentration (Pie/Donut)
+--    - Overdue KPI cards
+--    - Payment performance gauge
