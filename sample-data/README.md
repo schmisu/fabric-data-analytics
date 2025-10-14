@@ -81,13 +81,32 @@ Sample includes well-known German companies:
 
 ## Getting Sample Data
 
-### Option 1: Use Your Own SAP Data
+### Option 1: Generate Sample Data (Recommended)
+
+Use the provided Python script to generate realistic synthetic data:
+
+```bash
+cd sample-data/scripts
+python3 generate_sample_data.py
+```
+
+**What it generates:**
+- **100 vendors** across German companies (manufacturing, utilities, logistics, tech, finance, etc.)
+- **1,000 documents** (2023-2024) with seasonal patterns
+- **3,200+ line items** with varied amounts and GL accounts
+- **Multiple company codes** (1000, 2000, 3000)
+- **Varied payment terms** (7 different options)
+- **15 different GL accounts** (expenses, services, rent, etc.)
+
+**Features:**
+- Two years of data for YoY analysis
+- Realistic amount distributions (€500 - €200K)
+- Seasonal invoice patterns (more in Q4)
+- Multiple document types (Invoice 60%, Payment 35%, Credit Memo 5%)
+
+### Option 2: Use Your Own SAP Data
 
 Export from SAP using SE16/SE16N or a custom program, then save as CSV files in this folder.
-
-### Option 2: Generate Sample Data
-
-You can generate realistic sample data using the project's data generation scripts (if available) or create your own test data following the structure above.
 
 ## Usage in Project
 
