@@ -60,8 +60,6 @@ logs/
 *.xlsx
 *.xls
 *.parquet
-*.json
-*.xml
 
 # Project-specific development files
 dev/
