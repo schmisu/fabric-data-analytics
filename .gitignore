@@ -1,5 +1,5 @@
-# Resources folder - sample data should not be committed to production
-resources/
+# Claude Code development artifacts
+.claude/
 
 # Python
 __pycache__/
@@ -54,3 +54,10 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+# Project-specific
+PROJECT_STATUS.md
+PROJECT_README.md
+README_SAP_Sample_Data.md
+fabric-templates/
+data_validation_queries.sql

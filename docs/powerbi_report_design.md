@@ -39,13 +39,13 @@
    - Visual: Line chart
 
 6. **Clustered Column Chart - Monthly Invoice Volume**
-   - X-axis: `posting_date` (Month)
-   - Y-axis: `[Invoice Count]`
+   - X-axis: `posting_date` (Month) ####Date Hirarchy not possible <- check date format
+   - Y-axis: `[Invoice Count]` ####Only 1 Document per Month <- rerun data generation with. more invoices
    - Data labels: On
    - Visual: Clustered column chart
 
 7. **Donut Chart - Payment Status**
-   - Legend: `[Payment Status]`
+   - Legend: `[Payment Status]` <- Measure as Legend not possible
    - Values: `[Total Invoice Amount]`
    - Visual: Donut chart
 
