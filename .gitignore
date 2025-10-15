@@ -64,3 +64,6 @@ logs/
 # Project-specific development files
 dev/
 fabric-templates/
+
+# Development documentation (only in feature branches, not in main)
+docs/dev/
