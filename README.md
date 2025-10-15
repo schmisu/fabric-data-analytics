@@ -368,4 +368,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Built with Microsoft Fabric** | **Powered by Delta Lake** | **Modern Data Platform**
 
-*Last updated: October 2024*
+*Last updated: October 2025*
