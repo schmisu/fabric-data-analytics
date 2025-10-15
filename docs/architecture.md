@@ -282,4 +282,4 @@ SAP Tables (CSV)
 
 **Version**: 1.0
 **Last Updated**: 2025-10-14
-**Author**: SAP AP Analytics Project
+**Author**: [Dr. Susanne Schmidt](https://www.linkedin.com/in/dr-susanne-schmidt/)

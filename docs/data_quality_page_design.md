@@ -405,14 +405,3 @@ RETURN
 └─────────────────────────────────────────────────────────────┘
 ```
 
----
-
-## Next Steps After Building This Page
-
-1. **Build this page first** before other analytics pages
-2. **Review quality score** - if < 90%, fix data issues in SQL
-3. **Document known issues** in a text box on the page
-4. **Add navigation button** to proceed to Executive Dashboard only if quality is acceptable
-5. **Set as default page** when report opens
-
-This ensures stakeholders understand data limitations upfront!
