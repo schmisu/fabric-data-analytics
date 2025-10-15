@@ -289,29 +289,26 @@ See [docs/learnings.md](docs/learnings.md) for detailed discussion of:
 
 ## Use Cases for This Repository
 
-### For Recruiters/Hiring Managers:
-- Demonstrates **platform engineering thinking**, not just coding
-- Shows **end-to-end ownership** from ingestion to visualization
-- Proves ability to **document and communicate** technical decisions
-- Evidence of **production-ready quality standards**
+### For SAP Users & Organizations:
+- **Analyze your own SAP data**: Replace the sample data with your actual BKPF, BSEG, and LFA1 exports
+- **Accounts Payable analytics**: Out-of-the-box KPIs, aging analysis, payment performance tracking
+- **Extend to other modules**: Use the transformation patterns for Accounts Receivable (BSID/BSAD), Purchase Orders, etc.
+- **Production-ready framework**: Two-stage ETL and data quality patterns are designed for enterprise use
+- **Customizable reports**: Adapt the Power BI report templates to your specific business needs
 
-### For Platform PM Roles:
-- Understanding of **data platform architecture**
-- **Customer empathy** through hands-on building
-- Ability to **identify product gaps and opportunities**
-- Knowledge of **developer experience** and user pain points
+### For Learning Microsoft Fabric:
+- **Complete reference implementation**: See how all Fabric components work together (Dataflow, Lakehouse, Notebooks, Semantic Models, Pipelines)
+- **End-to-end example**: Follow the data journey from ingestion to visualization
+- **Best practices**: Git integration, version control, documentation patterns
+- **Reusable patterns**: Two-stage ETL, data quality framework, semantic modeling layer
+- **Decision rationale**: Understand *why* certain architectural choices were made
 
 ### For Data Engineers:
-- Reference implementation for **lakehouse patterns**
-- **Reusable transformation frameworks**
-- **Data quality patterns** that can be adapted
-- **Best practices** for Fabric development
-
-### For Learning:
-- Complete **end-to-end example** to study
-- **Decision rationale** documented for each choice
-- **Challenges and solutions** explained
-- **Code samples** for SQL, DAX, M
+- **Lakehouse architecture**: Reference implementation using Delta Lake
+- **Transformation patterns**: SQL-based two-stage ETL framework
+- **Data quality framework**: Completeness checks, validation flags, quality monitoring
+- **Semantic layer design**: 40+ DAX measures organized by business function
+- **Code samples**: Production-ready SQL, DAX, and M code you can adapt
 
 ## Future Enhancements
 
