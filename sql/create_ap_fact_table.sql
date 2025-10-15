@@ -51,10 +51,33 @@ SELECT
 
     -- Text fields
     bkpf.WAERS AS currency,
+    TRY_CAST(
+        CASE
+            WHEN bkpf.KURSF IS NULL OR TRIM(bkpf.KURSF) = '' THEN '1.00000'
+            ELSE bkpf.KURSF
+        END AS DECIMAL(9,5)
+    ) AS exchange_rate,
     bkpf.USNAM AS user_name,
     bkpf.BKTXT AS document_header_text,
     bkpf.XBLNR AS reference_document,
     bkpf.TCODE AS transaction_code,
+
+    -- Entry date
+    TRY_CAST(
+        CASE
+            WHEN bkpf.CPUDT IS NULL OR TRIM(bkpf.CPUDT) = '' THEN NULL
+            WHEN LENGTH(TRIM(bkpf.CPUDT)) = 8 THEN
+                CONCAT(SUBSTRING(bkpf.CPUDT, 1, 4), '-',
+                       SUBSTRING(bkpf.CPUDT, 5, 2), '-',
+                       SUBSTRING(bkpf.CPUDT, 7, 2))
+            ELSE bkpf.CPUDT
+        END AS DATE
+    ) AS entry_date,
+
+    -- Status fields
+    CASE WHEN TRIM(bkpf.BSTAT) = '' THEN NULL ELSE bkpf.BSTAT END AS document_status,
+    CASE WHEN TRIM(bkpf.STBLG) = '' THEN NULL ELSE bkpf.STBLG END AS reversal_document,
+    CASE WHEN TRIM(bkpf.STJAH) = '' THEN NULL ELSE bkpf.STJAH END AS reversal_fiscal_year,
 
     -- Line Item Information
     bseg.SHKZG AS debit_credit_indicator,
@@ -77,6 +100,8 @@ SELECT
         END AS DECIMAL(15,2)
     ) AS amount_document_currency,
 
+    CASE WHEN TRIM(bseg.PSWSL) = '' THEN NULL ELSE bseg.PSWSL END AS document_currency_key,
+
     TRY_CAST(
         CASE
             WHEN bseg.MWSTS IS NULL OR TRIM(bseg.MWSTS) = '' THEN '0'
@@ -84,6 +109,7 @@ SELECT
         END AS DECIMAL(15,2)
     ) AS tax_amount,
 
+    CASE WHEN TRIM(bseg.KOSTL) = '' THEN NULL ELSE bseg.KOSTL END AS cost_center,
     bseg.ZUONR AS assignment_reference,
     bseg.SGTXT AS line_item_text,
 
@@ -108,30 +134,50 @@ SELECT
 
     TRY_CAST(
         CASE
+            WHEN bseg.ZBD1P IS NULL OR TRIM(bseg.ZBD1P) = '' THEN NULL
+            ELSE bseg.ZBD1P
+        END AS DECIMAL(5,3)
+    ) AS cash_discount_percent_1,
+
+    TRY_CAST(
+        CASE
             WHEN bseg.ZBD2T IS NULL OR TRIM(bseg.ZBD2T) = '' THEN NULL
             ELSE bseg.ZBD2T
         END AS INT
     ) AS cash_discount_days_2,
 
-    CASE WHEN TRIM(bseg.ZTERM) = '' THEN NULL ELSE bseg.ZTERM END AS payment_terms,
+    TRY_CAST(
+        CASE
+            WHEN bseg.ZBD3T IS NULL OR TRIM(bseg.ZBD3T) = '' THEN NULL
+            ELSE bseg.ZBD3T
+        END AS INT
+    ) AS net_payment_terms_days,
+
+    CASE WHEN TRIM(bseg.ZTERM) = '' THEN NULL ELSE bseg.ZTERM END AS payment_terms_code,
 
     TRY_CAST(
         CASE
             WHEN bseg.SKFBT IS NULL OR TRIM(bseg.SKFBT) = '' THEN '0'
             ELSE REPLACE(REPLACE(bseg.SKFBT, ',', ''), ' ', '')
         END AS DECIMAL(15,2)
-    ) AS cash_discount_amount,
+    ) AS cash_discount_base_amount,
 
     -- Vendor Master Data (keep as text, clean only)
     CASE WHEN TRIM(lfa1.NAME1) = '' THEN NULL ELSE lfa1.NAME1 END AS vendor_name,
     CASE WHEN TRIM(lfa1.NAME2) = '' THEN NULL ELSE lfa1.NAME2 END AS vendor_name_2,
+    CASE WHEN TRIM(lfa1.SORTL) = '' THEN NULL ELSE lfa1.SORTL END AS vendor_sort_field,
     CASE WHEN TRIM(lfa1.ORT01) = '' THEN NULL ELSE lfa1.ORT01 END AS vendor_city,
     CASE WHEN TRIM(lfa1.LAND1) = '' THEN NULL ELSE lfa1.LAND1 END AS vendor_country,
+    CASE WHEN TRIM(lfa1.REGIO) = '' THEN NULL ELSE lfa1.REGIO END AS vendor_region,
     CASE WHEN TRIM(lfa1.PSTLZ) = '' THEN NULL ELSE lfa1.PSTLZ END AS vendor_postal_code,
     CASE WHEN TRIM(lfa1.STRAS) = '' THEN NULL ELSE lfa1.STRAS END AS vendor_street,
     CASE WHEN TRIM(lfa1.STCD1) = '' THEN NULL ELSE lfa1.STCD1 END AS vendor_tax_number_1,
+    CASE WHEN TRIM(lfa1.STCD2) = '' THEN NULL ELSE lfa1.STCD2 END AS vendor_tax_number_2,
     CASE WHEN TRIM(lfa1.STCEG) = '' THEN NULL ELSE lfa1.STCEG END AS vendor_vat_number,
     CASE WHEN TRIM(lfa1.KTOKK) = '' THEN NULL ELSE lfa1.KTOKK END AS vendor_account_group,
+    CASE WHEN TRIM(lfa1.BRSCH) = '' THEN NULL ELSE lfa1.BRSCH END AS vendor_industry,
+    CASE WHEN TRIM(lfa1.LOEVM) = '' THEN NULL ELSE lfa1.LOEVM END AS vendor_deletion_flag,
+    CASE WHEN TRIM(lfa1.SPERR) = '' THEN NULL ELSE lfa1.SPERR END AS vendor_posting_block,
 
     -- Quality check flag
     CASE WHEN lfa1.LIFNR IS NULL THEN 1 ELSE 0 END AS is_vendor_not_in_master
@@ -174,19 +220,26 @@ SELECT
     document_type_code AS document_type,
     document_date,
     posting_date,
+    entry_date,
     currency,
+    exchange_rate,
     user_name,
     document_header_text,
     reference_document,
     transaction_code,
+    document_status,
+    reversal_document,
+    reversal_fiscal_year,
 
     -- Line Item Information
     debit_credit_indicator,
     account_type,
     vendor_number,
     gl_account,
+    cost_center,
     amount_local_currency,
     amount_document_currency,
+    document_currency_key,
     tax_amount,
     assignment_reference,
     line_item_text,
@@ -194,20 +247,28 @@ SELECT
     -- Payment Terms
     baseline_payment_date,
     cash_discount_days_1,
+    cash_discount_percent_1,
     cash_discount_days_2,
-    payment_terms,
-    cash_discount_amount,
+    net_payment_terms_days,
+    payment_terms_code,
+    cash_discount_base_amount,
 
     -- Vendor Master Data
     vendor_name,
     vendor_name_2,
+    vendor_sort_field,
     vendor_city,
     vendor_country,
+    vendor_region,
     vendor_postal_code,
     vendor_street,
     vendor_tax_number_1,
+    vendor_tax_number_2,
     vendor_vat_number,
     vendor_account_group,
+    vendor_industry,
+    vendor_deletion_flag,
+    vendor_posting_block,
 
     -- Calculated Fields
     CASE
@@ -231,6 +292,8 @@ SELECT
 
     -- Due Date Calculation
     CASE
+        WHEN baseline_payment_date IS NOT NULL AND net_payment_terms_days IS NOT NULL
+        THEN DATEADD(day, net_payment_terms_days, baseline_payment_date)
         WHEN baseline_payment_date IS NOT NULL AND cash_discount_days_1 IS NOT NULL
         THEN DATEADD(day, cash_discount_days_1, baseline_payment_date)
         ELSE NULL
@@ -242,6 +305,13 @@ SELECT
         THEN DATEADD(day, cash_discount_days_1, baseline_payment_date)
         ELSE NULL
     END AS cash_discount_due_date,
+
+    -- Cash Discount Amount Calculation
+    CASE
+        WHEN cash_discount_percent_1 IS NOT NULL AND cash_discount_base_amount > 0
+        THEN ROUND(cash_discount_base_amount * cash_discount_percent_1 / 100, 2)
+        ELSE 0
+    END AS calculated_discount_amount,
 
     -- Data Quality Flags
     CASE WHEN vendor_number IS NULL THEN 1 ELSE 0 END AS is_missing_vendor,
